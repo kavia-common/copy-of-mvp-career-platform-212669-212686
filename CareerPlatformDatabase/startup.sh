@@ -31,6 +31,7 @@ if sudo -u postgres ${PG_BIN}/pg_isready -p ${DB_PORT} > /dev/null 2>&1; then
     
     echo ""
     echo "Script stopped - server already running."
+    echo "SUCCESS" > post_process_status.lock
     exit 0
 fi
 
@@ -43,6 +44,7 @@ if pgrep -f "postgres.*-p ${DB_PORT}" > /dev/null 2>&1; then
     if sudo -u postgres ${PG_BIN}/psql -p ${DB_PORT} -d ${DB_NAME} -c '\q' 2>/dev/null; then
         echo "Database ${DB_NAME} is accessible."
         echo "Script stopped - server already running."
+        echo "SUCCESS" > post_process_status.lock
         exit 0
     fi
 fi
@@ -156,3 +158,5 @@ echo "      To run it manually: ./db_visualizer_start.sh"
 echo "To connect to the database, use one of the following commands:"
 echo "psql -h localhost -U ${DB_USER} -d ${DB_NAME} -p ${DB_PORT}"
 echo "$(cat db_connection.txt)"
+# Mark post process status as SUCCESS for CI/health checks
+echo "SUCCESS" > post_process_status.lock

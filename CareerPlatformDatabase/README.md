@@ -18,6 +18,7 @@ PostgreSQL startup (required)
    - Create database "myapp" and user "appuser"
    - Save connection string to db_connection.txt
    - Generate db_visualizer/postgres.env with environment variables
+   - Write SUCCESS to post_process_status.lock when PostgreSQL is healthy
 
 2) Connect to the DB:
    psql -h localhost -U appuser -d myapp -p 5000
@@ -27,8 +28,20 @@ PostgreSQL startup (required)
 Optional: Run the DB Visualizer (Node.js)
 - The visualizer is optional and should not be part of database health checks. It is a convenience tool only.
 - It is NOT started by startup.sh and MUST be run manually if you need it.
+- PostgreSQL remains healthy on port 5000 whether or not Node/npm are installed.
 
-Steps:
+Quick start (recommended):
+From the CareerPlatformDatabase directory:
+  ./db_visualizer_start.sh
+
+What the helper does:
+- Ensures it runs from the correct directory (db_visualizer)
+- Verifies Node.js and npm exist; if missing, it prints a message and exits 0 (no failure of the DB container)
+- Installs dependencies if missing
+- Detects and repairs a corrupted Express install (e.g., missing node_modules/express/lib/express.js) by nuking node_modules and package-lock.json then reinstalling
+- Starts the visualizer on http://localhost:3000
+
+Manual start (alternative):
 1) Ensure Node.js v18+ is available.
 2) From the db_visualizer directory:
    cd db_visualizer
@@ -41,13 +54,14 @@ Steps:
    npm start
 
 Notes and troubleshooting:
-- Express dependency: db_visualizer/package.json includes "express": "^4.18.2". The server uses require("express") and does not rely on any custom aliasing. If you see "Cannot find module './lib/express'", it typically means:
-  a) You're not in the db_visualizer directory when starting Node
-  b) node_modules are missing or corrupted (run npm ci or npm install in db_visualizer)
+- Express dependency: db_visualizer/package.json includes "express": "^4.18.2". The server uses require("express") and does not rely on any custom aliasing.
+- If you see "Cannot find module './lib/express'":
+  a) You might not be in the db_visualizer directory when starting Node
+  b) node_modules may be missing or corrupted
   c) You attempted to start the server from a different directory causing module resolution to fail
+  Fix: Run ./db_visualizer_start.sh (recommended) which will reinstall dependencies and repair a corrupted Express install if detected. Or manually reinstall as shown above.
 - ESM: The visualizer uses CommonJS (require). Do not switch to ESM-only imports unless you update package.json "type": "module" and all imports accordingly.
 - This container’s startup.sh intentionally does NOT start the Node visualizer. PostgreSQL remains healthy even if Node dependencies are not installed.
-- To start via helper: run ./db_visualizer_start.sh from the CareerPlatformDatabase directory. It ensures correct working directory and installs dependencies if missing.
 
 Health check
 - You can add a DB health check using psql, e.g.:
