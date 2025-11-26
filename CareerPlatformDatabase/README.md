@@ -59,7 +59,9 @@ Notes and troubleshooting:
   a) You might not be in the db_visualizer directory when starting Node
   b) node_modules may be missing or corrupted
   c) You attempted to start the server from a different directory causing module resolution to fail
-  Fix: Run ./db_visualizer_start.sh (recommended) which will reinstall dependencies and repair a corrupted Express install if detected. Or manually reinstall as shown above.
+  Fix: Run ./db_visualizer_start.sh (recommended) which will reinstall dependencies and repair a corrupted Express install if detected. Or manually reinstall as shown above. As an alternative, from db_visualizer you can run:
+     npm run reinstall
+  which safely moves aside node_modules and package-lock.json and reinstalls dependencies.
 - ESM: The visualizer uses CommonJS (require). Do not switch to ESM-only imports unless you update package.json "type": "module" and all imports accordingly.
 - This container’s startup.sh intentionally does NOT start the Node visualizer. PostgreSQL remains healthy even if Node dependencies are not installed.
 

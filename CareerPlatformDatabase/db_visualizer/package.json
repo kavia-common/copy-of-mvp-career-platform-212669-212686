@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js --host 0.0.0.0",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "reinstall": "node -e \"try{require('fs').renameSync('node_modules','node_modules.bak')}catch(e){}; try{require('fs').renameSync('package-lock.json','package-lock.json.bak')}catch(e){}\" && npm install --no-audit --no-fund"
   },
   "dependencies": {
     "express": "^4.18.2",
