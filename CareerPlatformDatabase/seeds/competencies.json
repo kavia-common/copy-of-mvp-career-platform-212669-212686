@@ -1,0 +1,20 @@
+[
+  {
+    "id": "5e1eabf3-89c2-4b15-89fb-8a18b0cb8a71",
+    "name": "Enterprise Architecture",
+    "definition": "Architect and govern enterprise systems, platforms, and integration patterns.",
+    "metadata": { "category": "Architecture" }
+  },
+  {
+    "id": "33af9c95-bfdc-41ea-996e-3f9aeff2e08d",
+    "name": "Strategic Leadership",
+    "definition": "Define and communicate technology vision and strategy; influence executive stakeholders.",
+    "metadata": { "category": "Leadership" }
+  },
+  {
+    "id": "b1cb9ef1-9cf0-4aa0-9b85-232d7b0c1ed3",
+    "name": "Technology Portfolio Management",
+    "definition": "Manage programs, budgets, and investments across the technology portfolio.",
+    "metadata": { "category": "Management" }
+  }
+]

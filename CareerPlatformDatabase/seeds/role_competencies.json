@@ -1,0 +1,23 @@
+[
+  {
+    "id": "9b68c0f7-0c0f-4f9a-8a3a-76eeaa8f8680",
+    "role_id": "a3b871ab-1f65-4bfc-8ccd-2fb631a26b7a",
+    "competency_id": "5e1eabf3-89c2-4b15-89fb-8a18b0cb8a71",
+    "required_level": "Advanced",
+    "weight": 1.0
+  },
+  {
+    "id": "8a77ff73-0a83-4b88-a4a6-7cd0b0e84d16",
+    "role_id": "dfb0c2a1-37ad-4ed6-9485-78cf4a6b9242",
+    "competency_id": "33af9c95-bfdc-41ea-996e-3f9aeff2e08d",
+    "required_level": "Expert",
+    "weight": 1.0
+  },
+  {
+    "id": "2c09b4ac-fc3d-4f9a-bf2f-07edee26aa65",
+    "role_id": "dfb0c2a1-37ad-4ed6-9485-78cf4a6b9242",
+    "competency_id": "b1cb9ef1-9cf0-4aa0-9b85-232d7b0c1ed3",
+    "required_level": "Advanced",
+    "weight": 0.9
+  }
+]

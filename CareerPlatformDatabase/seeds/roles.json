@@ -1,0 +1,18 @@
+[
+  {
+    "id": "a3b871ab-1f65-4bfc-8ccd-2fb631a26b7a",
+    "name": "Chief Architect",
+    "description": "Leads enterprise architecture across the organization, aligning technology with business strategy.",
+    "metadata": { "domain": "architecture" },
+    "version": "2024.1",
+    "source": "SeedPlaceholder"
+  },
+  {
+    "id": "dfb0c2a1-37ad-4ed6-9485-78cf4a6b9242",
+    "name": "Chief Technology Officer (CTO)",
+    "description": "Owns technology strategy and execution across engineering and operations.",
+    "metadata": { "domain": "leadership" },
+    "version": "2024.1",
+    "source": "SeedPlaceholder"
+  }
+]

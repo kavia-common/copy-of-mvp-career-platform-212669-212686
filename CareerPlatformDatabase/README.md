@@ -6,6 +6,8 @@ Contents
 - startup.sh: Initializes and starts PostgreSQL on the configured port (default 5000), creates DB/user, and writes connection info to db_connection.txt and db_visualizer/postgres.env.
 - backup_db.sh / restore_db.sh: Universal backup/restore helpers that handle PostgreSQL (and other engines if present) for convenience.
 - db_visualizer/: Optional Node.js server to inspect DBs via a browser. Not started automatically.
+- schema.sql: Reference schema aligned to backend models (users, roles, competencies, role mappings, role adjacency).
+- seeds/: JSON placeholders for roles, competencies, role_competencies, and role_adjacency to support ingestion and testing.
 
 PostgreSQL startup (required)
 1) Run the startup script:
@@ -75,3 +77,70 @@ Security/Compliance
 
 License
 - Internal MVP component.
+
+------------------------------------------------------------
+Schema and seeding artifacts
+------------------------------------------------------------
+
+Overview
+- schema.sql: Reference DDL that defines users, roles, competencies, user_roles, role_competencies, and role_adjacency.
+- seeds/roles.json: Placeholder set of roles aligned to backend Role schema (id, name, description, metadata, version, source).
+- seeds/competencies.json: Placeholder set of competencies (id, name, definition, metadata).
+- seeds/role_competencies.json: Placeholder mapping records joining roles-to-competencies with required_level and weight.
+- seeds/role_adjacency.json: Placeholder directional adjacency edges between roles with score [0..1] and rationale.
+
+Apply the schema
+- Ensure PostgreSQL is running via ./startup.sh
+- Apply DDL:
+  psql -h localhost -U appuser -d myapp -p 5000 -f schema.sql
+
+Notes on IDs and compatibility
+- All primary keys are TEXT to allow application-generated UUID strings across engines (SQLite and PostgreSQL). This mirrors backend behavior where the server generates UUID4 strings if clients do not supply them.
+- If your environment requires database-generated UUIDs, you can switch TEXT to UUID and add DEFAULT gen_random_uuid() after enabling pgcrypto (requires superuser to CREATE EXTENSION).
+
+Using the JSON seeds
+- The JSON files are placeholders intended for ingestion by a backend script or the Node-based role mapping/ingestion service in the MVP plan.
+- Recommended ingestion approach:
+  - Use a small script (Python/Node/Go) that:
+    1) Reads JSON arrays from seeds/
+    2) Upserts into tables using parameterized SQL (INSERT ... ON CONFLICT DO NOTHING/UPDATE)
+    3) Preserves referential integrity order: roles -> competencies -> role_competencies -> role_adjacency
+- Direct psql import from JSON is not recommended here because pg_read_file requires elevated privileges and COPY expects CSV/TSV; using an ingestion script provides better validation, audit, and error handling.
+
+Field mapping (JSON -> DB)
+- roles.json
+  - id -> roles.id
+  - name -> roles.name
+  - description -> roles.description
+  - metadata -> roles.metadata (JSONB)
+  - version -> roles.version
+  - source -> roles.source
+
+- competencies.json
+  - id -> competencies.id
+  - name -> competencies.name
+  - definition -> competencies.definition
+  - metadata -> competencies.metadata (JSONB)
+
+- role_competencies.json
+  - id -> role_competencies.id
+  - role_id -> role_competencies.role_id
+  - competency_id -> role_competencies.competency_id
+  - required_level -> role_competencies.required_level
+  - weight -> role_competencies.weight
+
+- role_adjacency.json
+  - id -> role_adjacency.id
+  - source_role_id -> role_adjacency.source_role_id
+  - target_role_id -> role_adjacency.target_role_id
+  - score -> role_adjacency.score (0..1)
+  - rationale -> role_adjacency.rationale
+
+Operational notes
+- Keep seeds free of PII or production-sensitive data.
+- Maintain traceability by storing "source" and/or embedding provenance in metadata where applicable.
+- For larger datasets, consider batching inserts and adding explicit transactions in ingestion scripts.
+
+Next steps (outside scope of this container)
+- Backend/Node ingestion implementation that validates and loads these JSON seeds.
+- Optional additions: audit_logs and templates tables in the DB to support broader MVP features as needed in subsequent tasks.

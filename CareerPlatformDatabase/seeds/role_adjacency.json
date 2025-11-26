@@ -1,0 +1,16 @@
+[
+  {
+    "id": "a931d72e-1b3d-4ba1-8bf0-1e2febf6e840",
+    "source_role_id": "a3b871ab-1f65-4bfc-8ccd-2fb631a26b7a",
+    "target_role_id": "dfb0c2a1-37ad-4ed6-9485-78cf4a6b9242",
+    "score": 0.78,
+    "rationale": "High overlap in strategic technology leadership and enterprise architecture."
+  },
+  {
+    "id": "f61a9c2f-9950-4b8b-b1d2-6ce1ce0d5d0f",
+    "source_role_id": "dfb0c2a1-37ad-4ed6-9485-78cf4a6b9242",
+    "target_role_id": "a3b871ab-1f65-4bfc-8ccd-2fb631a26b7a",
+    "score": 0.65,
+    "rationale": "CTO often has deep architecture experience but broader org scope."
+  }
+]
