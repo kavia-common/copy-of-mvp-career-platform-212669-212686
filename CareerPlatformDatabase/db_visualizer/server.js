@@ -1,3 +1,8 @@
+/**
+ * Optional DB Visualizer server (CommonJS).
+ * This is NOT started by default with the database container. Start manually
+ * from the db_visualizer directory to ensure proper Node module resolution.
+ */
 const express = require('express');
 const path = require('path');
 const fs = require('fs');

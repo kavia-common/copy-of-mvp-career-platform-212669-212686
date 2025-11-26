@@ -14,18 +14,38 @@ fi
 
 cd "${VIS_DIR}"
 
-# If node_modules is missing, install dependencies
-if [ ! -d "node_modules" ]; then
+# Ensure Node/npm exist
+if ! command -v node >/dev/null 2>&1 || ! command -v npm >/dev/null 2>&1; then
+  echo "Node.js (v18+) and npm are required to run the db_visualizer."
+  echo "Skipping visualizer start. PostgreSQL remains unaffected."
+  exit 0
+fi
+
+# Helper: install deps cleanly in the correct folder
+install_deps() {
   echo "Installing db_visualizer dependencies..."
-  if command -v npm >/dev/null 2>&1; then
-    # Try npm ci first if lockfile exists; fallback to npm install
-    if [ -f "package-lock.json" ]; then
-      npm ci --no-audit --no-fund || npm install --no-audit --no-fund
-    else
-      npm install --no-audit --no-fund
-    fi
+  rm -rf node_modules 2>/dev/null || true
+  # Prefer reproducible install when lockfile exists
+  if [ -f "package-lock.json" ]; then
+    npm ci --no-audit --no-fund || npm install --no-audit --no-fund
   else
-    echo "npm is not installed. Please install Node.js (v18+) and npm."
+    npm install --no-audit --no-fund
+  fi
+}
+
+# If node_modules missing or express cannot be resolved, (re)install
+NEED_INSTALL=0
+if [ ! -d "node_modules" ]; then
+  NEED_INSTALL=1
+else
+  node -e "require.resolve('express');" >/dev/null 2>&1 || NEED_INSTALL=1
+fi
+
+if [ "$NEED_INSTALL" -eq 1 ]; then
+  install_deps
+  # Verify express resolved
+  if ! node -e "require.resolve('express');" >/dev/null 2>&1; then
+    echo "Failed to resolve 'express' after install. Please check network access or npm registry."
     exit 1
   fi
 fi
