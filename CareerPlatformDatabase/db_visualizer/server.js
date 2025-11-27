@@ -3,15 +3,31 @@
  * This is NOT started by default with the database container. Start manually
  * from the db_visualizer directory to ensure proper Node module resolution.
  */
-const express = require('express');
 const path = require('path');
 const fs = require('fs');
 
-// Database clients
-const { Pool } = require('pg');
-const mysql = require('mysql2/promise');
-const sqlite3 = require('sqlite3').verbose();
-const { MongoClient } = require('mongodb');
+// Attempt to load optional runtime dependencies (exit gracefully if missing/broken).
+let express = null;
+let Pool = null;
+let mysql = null;
+let sqlite3 = null;
+let MongoClient = null;
+
+(function tryLoadDeps() {
+  try {
+    express = require('express');
+    ({ Pool } = require('pg'));
+    mysql = require('mysql2/promise');
+    sqlite3 = require('sqlite3').verbose();
+    ({ MongoClient } = require('mongodb'));
+  } catch (err) {
+    console.error('[db_visualizer] Optional tool not initialized: missing/broken Node dependencies (express or db drivers).');
+    console.error('[db_visualizer] Hint: run ./db_visualizer_start.sh from CareerPlatformDatabase to install and start it.');
+    console.error('[db_visualizer] Error:', err.message);
+    // Exit cleanly so the DB container health does not fail if this script is invoked unintentionally.
+    process.exit(0);
+  }
+})();
 
 const app = express();
 app.use((req, res, next) => {

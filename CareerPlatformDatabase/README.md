@@ -3,7 +3,7 @@
 This container is responsible for starting and maintaining PostgreSQL for the MVP Career Platform. A small Node.js "db_visualizer" tool is provided for convenience to inspect the database, but it is optional and not part of the DB startup flow.
 
 Contents
-- startup.sh: Initializes and starts PostgreSQL on the configured port (default 5000), creates DB/user, and writes connection info to db_connection.txt and db_visualizer/postgres.env.
+- startup.sh: Initializes and starts PostgreSQL on the configured port (default 5001; configurable via .env DB_PORT or PORT), creates DB/user, and writes connection info to db_connection.txt and db_visualizer/postgres.env.
 - backup_db.sh / restore_db.sh: Universal backup/restore helpers that handle PostgreSQL (and other engines if present) for convenience.
 - db_visualizer/: Optional Node.js server to inspect DBs via a browser. Not started automatically.
 - schema.sql: Reference schema aligned to backend models (users, roles, competencies, role mappings, role adjacency).
@@ -23,13 +23,14 @@ PostgreSQL startup (required)
    - Write SUCCESS to post_process_status.lock when PostgreSQL is healthy
 
 2) Connect to the DB:
-   psql -h localhost -U appuser -d myapp -p 5000
+   psql -h localhost -U appuser -d myapp -p 5001
    or
    $(cat db_connection.txt)
 
 Optional: Run the DB Visualizer (Node.js)
 - The visualizer is optional and should not be part of database health checks. It is a convenience tool only.
 - It is NOT started by startup.sh and MUST be run manually if you need it.
+- If started accidentally without Node dependencies installed, it exits gracefully and prints instructions to use ./db_visualizer_start.sh to install deps.
 - PostgreSQL remains healthy on port 5000 whether or not Node/npm are installed.
 
 Quick start (recommended):

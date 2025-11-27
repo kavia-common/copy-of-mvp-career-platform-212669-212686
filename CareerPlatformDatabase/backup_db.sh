@@ -3,10 +3,16 @@
 # Universal Database Backup Script
 # Automatically detects and backs up the running database
 
-DB_NAME="myapp"
-DB_USER="appuser"
-DB_PASSWORD="dbuser123"
-DB_PORT="5000"
+DB_NAME="${DB_NAME:-myapp}"
+DB_USER="${DB_USER:-appuser}"
+DB_PASSWORD="${DB_PASSWORD:-dbuser123}"
+
+# Load .env if present and allow override via DB_PORT or PORT
+if [ -f ".env" ]; then
+    # shellcheck disable=SC1091
+    source ".env"
+fi
+DB_PORT="${DB_PORT:-${PORT:-5001}}"
 
 # SQLite check and backup
 if [ -f "${DB_NAME}" ]; then

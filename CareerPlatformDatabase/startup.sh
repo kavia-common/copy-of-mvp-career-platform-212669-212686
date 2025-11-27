@@ -1,10 +1,19 @@
 #!/bin/bash
 
 # Minimal PostgreSQL startup script with full paths
-DB_NAME="myapp"
-DB_USER="appuser"
-DB_PASSWORD="dbuser123"
-DB_PORT="5000"
+# Allow overrides via environment or .env file
+DB_NAME="${DB_NAME:-myapp}"
+DB_USER="${DB_USER:-appuser}"
+DB_PASSWORD="${DB_PASSWORD:-dbuser123}"
+
+# Load .env if present to allow PORT/DB_PORT to override defaults
+if [ -f ".env" ]; then
+    # shellcheck disable=SC1091
+    source ".env"
+fi
+
+# Prefer DB_PORT, else fallback to PORT, else default to 5001
+DB_PORT="${DB_PORT:-${PORT:-5001}}"
 
 echo "Starting PostgreSQL setup..."
 
